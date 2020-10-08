@@ -26,7 +26,7 @@ public class main {
         panelTitulo.setBorder(new EmptyBorder(60,60,0,60));
         JPanel panelCampo = new JPanel();
         panelCampo.setBorder(new EmptyBorder(0,60,0,60));
-        JPanel panelBotones = new JPanel(new GridLayout(4,2));
+        JPanel panelBotones = new JPanel(new GridLayout(4,3));
         panelBotones.setBorder(new EmptyBorder(30,60,0,60));
 
         JLabel titulo = new JLabel("Programa creador de ficheros");
@@ -43,18 +43,23 @@ public class main {
         JButton botonContarVocales = new JButton("Contar vocales");
         JButton botonCifrar = new JButton("Cifrar fichero");
         JButton botonBorrarFich = new JButton("Borrar fichero");
+        JButton botonCopiarFichero = new JButton("Copiar fichero");
 
         JTextArea campoCont = new JTextArea();
-        campoCont.setPreferredSize(new Dimension(500,200));
+        campoCont.setPreferredSize(new Dimension(500,100));
         campoCont.setLineWrap(true);
         campoCont.setEditable(false);
+        JTextArea campoInfo = new JTextArea();
+        campoInfo.setEditable(false);
 
 
         panelTitulo.add(titulo);
         panelCampo.add(campoCont);
+        panelCampo.add(campoInfo);
         panelBotones.add(botonCrear);
         panelBotones.add(botonPropiedades);
         panelBotones.add(botonInsertar);
+        panelBotones.add(botonCopiarFichero);
         panelBotones.add(botonEditar);
         panelBotones.add(botonContarPalabras);
         panelBotones.add(botonContarVocales);
@@ -103,8 +108,7 @@ public class main {
                 int seleccion = ventanaFichero.showOpenDialog(ventanaFichero.getParent());
 
                 if (seleccion == JFileChooser.APPROVE_OPTION) {
-                    JFrame ventanaSeleccion = new JFrame("Insertar información");
-                    ventanaSeleccion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    JFrame ventanaSeleccion = new JFrame("Propiedades Fichero");
                     ventanaSeleccion.setSize(300,320);
                     ventanaSeleccion.setResizable(false);
 
@@ -126,7 +130,6 @@ public class main {
                     ventanaSeleccion.add(panelSeleccion);
 
                     ventanaSeleccion.setVisible(true);
-                    ventana.setVisible(false);
 
                     Path ruta = Paths.get(ventanaFichero.getSelectedFile().getAbsolutePath());
                     FileTime fech = null;
@@ -144,7 +147,6 @@ public class main {
                                     String linea;
                                     while ((linea = leer.readLine()) != null) {
                                         campoContenido.append(linea+ "\n");
-                                        System.out.println(linea);
                                     }
 
                                     leer.close();
@@ -176,6 +178,89 @@ public class main {
             }
         });
 
+        /*botonEditar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int seleccion = ventanaFichero.showOpenDialog(ventanaFichero.getParent());
+
+                try {
+                    if (seleccion == JFileChooser.APPROVE_OPTION) {
+
+                    }
+
+
+                } catch (IOException t) {
+                    t.printStackTrace();
+                }
+            }
+        });*/
+
+        botonContarPalabras.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int seleccion = ventanaFichero.showOpenDialog(ventanaFichero.getParent());
+
+                    BufferedReader fichero = new BufferedReader(new FileReader(ventanaFichero.getSelectedFile().getAbsolutePath()));
+
+                    int codigo = fichero.read();
+                    int cont = 0;
+                    String linea = " ";
+
+                    while (linea != null) {
+                        cont = cont + linea.split(" ").length;
+                        linea = fichero.readLine();
+                    }
+
+                        campoInfo.setText("El txt tiene "+cont+" palabra/s.");
+
+                    fichero.close();
+                } catch (Exception a) {
+                    System.out.println(e);
+                }
+            }
+        });
+
+        botonContarVocales.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int seleccion = ventanaFichero.showOpenDialog(ventanaFichero.getParent());
+
+                    BufferedReader leer = new BufferedReader(new FileReader(ventanaFichero.getSelectedFile().getAbsolutePath()));
+
+                    String texto = null;
+
+                    String lineaSalida = "";
+                    StringBuffer contenido = new StringBuffer();
+                    String separador = "";
+
+                    while ((lineaSalida = leer.readLine()) != null)
+                    {
+                        contenido.append(separador + lineaSalida);
+                        separador = "\n";
+                    }
+
+                    texto = contenido.toString();
+
+                    int cont = 0;
+                    for(int x=0;x<texto.length();x++) {
+                        if ((texto.charAt(x)=='a') || (texto.charAt(x)=='e') || (texto.charAt(x)=='i') || (texto.charAt(x)=='o') || (texto.charAt(x)=='u')){
+                            cont++;
+                            System.out.println(cont);
+                        }
+                    }
+
+                    campoInfo.setText("El txt tiene "+String.valueOf(cont)+" vocal/es.");
+
+                    leer.close();
+                } catch (IOException y) {
+                    y.printStackTrace();
+                }
+
+            }
+        });
+
         botonBorrarFich.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -187,9 +272,9 @@ public class main {
                         File fichero = new File(ventanaFichero.getSelectedFile().getAbsolutePath());
                         fichero.delete();
                         if (fichero.exists()) {
-                            campoCont.setText("No se ha podido borrar el fichero...");
+                            campoInfo.setText("No se ha podido borrar el fichero...");
                         } else {
-                            campoCont.setText("Fichero borrado con exito...");
+                            campoInfo.setText("Fichero borrado con exito...");
                         }
 
                     }
