@@ -17,6 +17,7 @@ public class main {
     public static void main(String[] args) {
 
         JFrame ventana = new JFrame("Trabajo Fichero");
+
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setSize(550,500);
         ventana.setResizable(false);
@@ -157,6 +158,8 @@ public class main {
 
                 try {
 
+                    ventanaFichero.showOpenDialog(ventanaFichero.getParent());
+
                     BufferedReader fichero = new BufferedReader(new FileReader(ventanaFichero.getSelectedFile().getAbsolutePath()));
 
                     int cont = 0;
@@ -179,9 +182,11 @@ public class main {
         botonContarVocales.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser ventanaFichero = new JFileChooser();
 
                 try {
+                    JFileChooser ventanaFichero = new JFileChooser();
+
+                    ventanaFichero.showOpenDialog(ventanaFichero.getParent());
 
                     BufferedReader leer = new BufferedReader(new FileReader(ventanaFichero.getSelectedFile().getAbsolutePath()));
 
